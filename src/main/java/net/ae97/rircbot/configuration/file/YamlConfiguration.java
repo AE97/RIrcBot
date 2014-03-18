@@ -1,10 +1,26 @@
+/*
+ * Copyright (C) 2014 Lord_Ralex
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.ae97.rircbot.configuration.file;
 
 import java.util.Map;
-import org.apache.commons.lang3.Validate;
 import net.ae97.rircbot.configuration.Configuration;
 import net.ae97.rircbot.configuration.ConfigurationSection;
 import net.ae97.rircbot.configuration.InvalidConfigurationException;
+import org.apache.commons.lang3.Validate;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.error.YAMLException;
@@ -74,7 +90,6 @@ public class YamlConfiguration extends FileConfiguration {
         boolean foundHeader = false;
         for (int i = 0; (i < lines.length) && (readingHeader); i++) {
             String line = lines[i];
-
             if (line.startsWith(COMMENT_PREFIX)) {
                 if (i > 0) {
                     result.append("\n");

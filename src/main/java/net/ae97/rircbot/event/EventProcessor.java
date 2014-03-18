@@ -20,112 +20,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.ae97.rircbot.RIrcBot;
 import net.ae97.rircbot.listener.Listener;
-import net.ae97.rircbot.plugin.Plugin;
 
 /**
  * @author Lord_Ralex
  */
 public class EventProcessor extends Thread {
 
-    private final Map<Plugin, List<Listener>> enabledListeners = new ConcurrentHashMap<>();
     private final Queue<Event> eventQueue = new LinkedList<>();
 
     public EventProcessor() {
-    }
-
-    public void registerListener(Plugin plugin, Listener listener) {
-        List<Listener> listeners = enabledListeners.get(plugin);
-        if (listeners == null) {
-            listeners = new LinkedList<>();
-            enabledListeners.put(plugin, listeners);
-        }
-        listeners.add(listener);
-        Method[] methods = listener.getClass().getDeclaredMethods();
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(EventHandler.class)) {
-                Class<?>[] params = method.getParameterTypes();
-                if (params.length != 1) {
-                    continue;
-                }
-                Class<?> cl = params[0];
-                if (Event.class.isAssignableFrom(cl)) {
-                    Class<? extends Event> event = (Class<? extends Event>) cl;
-                    try {
-                        Method eventHandlerMethod = event.getDeclaredMethod("getHandlers");
-                        if (List.class.isAssignableFrom(eventHandlerMethod.getReturnType())) {
-                            List listenerList = (List) eventHandlerMethod.invoke(null);
-                            listenerList.add(listener);
-                        }
-                    } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        Logger.getLogger(EventProcessor.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else {
-                    RIrcBot.getLogger().severe(listener.getClass().getName() + " tried to register non-event class " + cl.getName());
-                }
-            }
-        }
-    }
-
-    public boolean unregisterListener(Plugin plugin, Listener listener) {
-        List<Listener> listeners = enabledListeners.get(plugin);
-        if (listeners != null) {
-            Method[] methods = listener.getClass().getDeclaredMethods();
-            for (Method method : methods) {
-                if (method.isAnnotationPresent(EventHandler.class)) {
-                    Class<?>[] params = method.getParameterTypes();
-                    if (params.length != 1) {
-                        continue;
-                    }
-                    Class<?> cl = params[0];
-                    if (Event.class.isAssignableFrom(cl)) {
-                        Class<? extends Event> event = (Class<? extends Event>) cl;
-                        try {
-                            Method eventHandlerMethod = event.getDeclaredMethod("getHandlers");
-                            if (List.class.isAssignableFrom(eventHandlerMethod.getReturnType())) {
-                                List listenerList = (List) eventHandlerMethod.invoke(null);
-                                listenerList.remove(listener);
-                            }
-                        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                            Logger.getLogger(EventProcessor.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    } else {
-                        RIrcBot.getLogger().severe(listener.getClass().getName() + " tried to register non-event class " + cl.getName());
-                    }
-                }
-            }
-        }
-        return listeners != null && listeners.remove(listener);
-    }
-
-    public boolean unregisterListeners(Plugin plugin) {
-        List<Listener> listeners = enabledListeners.get(plugin);
-        if (listeners != null) {
-            List<Listener> listenerCopy = new LinkedList<>();
-            for (Listener listener : listeners) {
-                listenerCopy.add(listener);
-            }
-            for (Listener listener : listenerCopy) {
-                unregisterListener(plugin, listener);
-            }
-        }
-        return enabledListeners.remove(plugin) != null;
-    }
-
-    public List<Listener> getListeners(Plugin plugin) {
-        List<Listener> listeners = enabledListeners.get(plugin);
-        if (listeners == null) {
-            listeners = new LinkedList<>();
-            enabledListeners.put(plugin, listeners);
-        }
-        return listeners;
-
     }
 
     @Override
@@ -154,21 +61,12 @@ public class EventProcessor extends Thread {
                                 method.invoke(listener, event);
                             }
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                            RIrcBot.getLogger().log(Level.SEVERE, "Error occurred while processing " + event.getClass().getSimpleName() + " in " + findPlugin(listener).getName(), ex);
+                            RIrcBot.getLogger().log(Level.SEVERE, "Error occurred while processing " + event.getClass().getSimpleName(), (ex instanceof InvocationTargetException) ? ex.getCause() : ex);
                         }
                     }
                 }
             }
         }
-    }
-
-    protected Plugin findPlugin(Listener listener) {
-        for (Plugin pl : enabledListeners.keySet()) {
-            if (enabledListeners.get(pl).contains(listener)) {
-                return pl;
-            }
-        }
-        return null;
     }
 
     public void fireEvent(Event event) {

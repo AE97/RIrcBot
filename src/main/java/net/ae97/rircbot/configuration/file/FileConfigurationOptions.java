@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2014 Lord_Ralex
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.ae97.rircbot.configuration.file;
 
 import net.ae97.rircbot.configuration.MemoryConfiguration;
@@ -72,7 +88,8 @@ public class FileConfigurationOptions extends MemoryConfigurationOptions {
     /**
      * Gets whether or not the header should be copied from a default source.
      * <p>
-     * If this is true, if a default {@link FileConfiguration} is passed to null null     {@link
+     * If this is true, if a default {@link FileConfiguration} is passed to null
+     * null null null     {@link
      * FileConfiguration#setDefaults(net.ae97.rircbot.configuration.Configuration)}
      * then upon saving it will use the header from that config, instead of the
      * one provided here.
@@ -93,7 +110,8 @@ public class FileConfigurationOptions extends MemoryConfigurationOptions {
     /**
      * Sets whether or not the header should be copied from a default source.
      * <p>
-     * If this is true, if a default {@link FileConfiguration} is passed to null null     {@link
+     * If this is true, if a default {@link FileConfiguration} is passed to null
+     * null null null     {@link
      * FileConfiguration#setDefaults(net.ae97.rircbot.configuration.Configuration)}
      * then upon saving it will use the header from that config, instead of the
      * one provided here.
@@ -110,7 +128,6 @@ public class FileConfigurationOptions extends MemoryConfigurationOptions {
      */
     public FileConfigurationOptions copyHeader(boolean value) {
         copyHeader = value;
-
         return this;
     }
 }

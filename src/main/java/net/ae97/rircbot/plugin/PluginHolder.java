@@ -14,32 +14,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.ae97.rircbot;
+package net.ae97.rircbot.plugin;
 
-import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import net.ae97.rircbot.listener.Listener;
 
 /**
  * @author Lord_Ralex
  */
-public class Main {
+public class PluginHolder {
 
-    private static volatile Main instance;
+    private final Plugin plugin;
+    private final List<Listener> listeners = new LinkedList<>();
 
-    public static void main(String[] args) {
-        instance = new Main();
-        try {
-            instance.rircbot.connect();
-        } catch (IOException ex) {
-        }
+    public PluginHolder(Plugin p) {
+        plugin = p;
     }
 
-    protected static RIrcBot getBot() {
-        return instance.rircbot;
+    public List<Listener> getListeners() {
+        return listeners;
     }
 
-    private final RIrcBot rircbot;
-
-    private Main() {
-        rircbot = new RIrcBot();
+    public Plugin getPlugin() {
+        return plugin;
     }
+
 }

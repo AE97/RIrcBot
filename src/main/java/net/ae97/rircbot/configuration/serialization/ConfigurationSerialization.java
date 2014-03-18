@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2014 Lord_Ralex
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.ae97.rircbot.configuration.serialization;
 
 import java.lang.reflect.Constructor;
@@ -7,8 +23,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import net.ae97.rircbot.RIrcBot;
 import org.apache.commons.lang3.Validate;
 
 /**
@@ -18,7 +33,7 @@ public class ConfigurationSerialization {
 
     public static final String SERIALIZED_TYPE_KEY = "==";
     private final Class<? extends ConfigurationSerializable> clazz;
-    private static final Map<String, Class<? extends ConfigurationSerializable>> aliases = new HashMap<String, Class<? extends ConfigurationSerializable>>();
+    private static final Map<String, Class<? extends ConfigurationSerializable>> aliases = new HashMap<>();
 
     protected ConfigurationSerialization(Class<? extends ConfigurationSerializable> clazz) {
         this.clazz = clazz;
@@ -27,14 +42,12 @@ public class ConfigurationSerialization {
     protected Method getMethod(String name, boolean isStatic) {
         try {
             Method method = clazz.getDeclaredMethod(name, Map.class);
-
             if (!ConfigurationSerializable.class.isAssignableFrom(method.getReturnType())) {
                 return null;
             }
             if (Modifier.isStatic(method.getModifiers()) != isStatic) {
                 return null;
             }
-
             return method;
         } catch (NoSuchMethodException | SecurityException ex) {
             return null;
@@ -54,17 +67,14 @@ public class ConfigurationSerialization {
             ConfigurationSerializable result = (ConfigurationSerializable) method.invoke(null, args);
 
             if (result == null) {
-                Logger.getLogger(ConfigurationSerialization.class.getName()).log(Level.SEVERE, "Could not call method '" + method.toString() + "' of " + clazz + " for deserialization: method returned null");
+                RIrcBot.getLogger().log(Level.SEVERE, "Could not call method '" + method.toString() + "' of " + clazz + " for deserialization: method returned null");
             } else {
                 return result;
             }
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            Logger.getLogger(ConfigurationSerialization.class.getName()).log(
-                    Level.SEVERE,
-                    "Could not call method '" + method.toString() + "' of " + clazz + " for deserialization",
+            RIrcBot.getLogger().log(Level.SEVERE, "Could not call method '" + method.toString() + "' of " + clazz + " for deserialization",
                     ex instanceof InvocationTargetException ? ex.getCause() : ex);
         }
-
         return null;
     }
 
@@ -72,45 +82,34 @@ public class ConfigurationSerialization {
         try {
             return ctor.newInstance(args);
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | InvocationTargetException ex) {
-            Logger.getLogger(ConfigurationSerialization.class.getName()).log(
-                    Level.SEVERE,
-                    "Could not call constructor '" + ctor.toString() + "' of " + clazz + " for deserialization",
+            RIrcBot.getLogger().log(Level.SEVERE, "Could not call constructor '" + ctor.toString() + "' of " + clazz + " for deserialization",
                     ex instanceof InvocationTargetException ? ex.getCause() : ex);
         }
-
         return null;
     }
 
     public ConfigurationSerializable deserialize(Map<String, ?> args) {
         Validate.notNull(args, "Args must not be null");
-
         ConfigurationSerializable result = null;
         Method method = null;
-
         if (result == null) {
             method = getMethod("deserialize", true);
-
             if (method != null) {
                 result = deserializeViaMethod(method, args);
             }
         }
-
         if (result == null) {
             method = getMethod("valueOf", true);
-
             if (method != null) {
                 result = deserializeViaMethod(method, args);
             }
         }
-
         if (result == null) {
             Constructor<? extends ConfigurationSerializable> constructor = getConstructor();
-
             if (constructor != null) {
                 result = deserializeViaCtor(constructor, args);
             }
         }
-
         return result;
     }
 
@@ -147,11 +146,9 @@ public class ConfigurationSerialization {
      */
     public static ConfigurationSerializable deserializeObject(Map<String, ?> args) {
         Class<? extends ConfigurationSerializable> clazz = null;
-
         if (args.containsKey(SERIALIZED_TYPE_KEY)) {
             try {
                 String alias = (String) args.get(SERIALIZED_TYPE_KEY);
-
                 if (alias == null) {
                     throw new IllegalArgumentException("Cannot have null alias");
                 }
@@ -166,7 +163,6 @@ public class ConfigurationSerialization {
         } else {
             throw new IllegalArgumentException("Args doesn't contain type key ('" + SERIALIZED_TYPE_KEY + "')");
         }
-
         return new ConfigurationSerialization(clazz).deserialize(args);
     }
 
@@ -177,7 +173,6 @@ public class ConfigurationSerialization {
      */
     public static void registerClass(Class<? extends ConfigurationSerializable> clazz) {
         DelegateDeserialization delegate = clazz.getAnnotation(DelegateDeserialization.class);
-
         if (delegate == null) {
             registerClass(clazz, getAlias(clazz));
             registerClass(clazz, clazz.getName());
@@ -213,7 +208,6 @@ public class ConfigurationSerialization {
      */
     public static void unregisterClass(Class<? extends ConfigurationSerializable> clazz) {
         while (aliases.values().remove(clazz)) {
-            ;
         }
     }
 
@@ -237,7 +231,6 @@ public class ConfigurationSerialization {
      */
     public static String getAlias(Class<? extends ConfigurationSerializable> clazz) {
         DelegateDeserialization delegate = clazz.getAnnotation(DelegateDeserialization.class);
-
         if (delegate != null) {
             if ((delegate.value() == null) || (delegate.value() == clazz)) {
                 delegate = null;
@@ -245,7 +238,6 @@ public class ConfigurationSerialization {
                 return getAlias(delegate.value());
             }
         }
-
         if (delegate == null) {
             SerializableAs alias = clazz.getAnnotation(SerializableAs.class);
 
@@ -253,7 +245,6 @@ public class ConfigurationSerialization {
                 return alias.value();
             }
         }
-
         return clazz.getName();
     }
 }

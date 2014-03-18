@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2014 Lord_Ralex
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package net.ae97.rircbot.configuration;
 
 import java.util.ArrayList;
@@ -6,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.lang3.Validate;
 
 /**
@@ -335,7 +350,6 @@ public class MemorySection implements ConfigurationSection {
         return val instanceof Long;
     }
 
-    // Java
     @Override
     public List<?> getList(String path) {
         Object def = getDefault(path);
@@ -604,10 +618,8 @@ public class MemorySection implements ConfigurationSection {
     protected void mapChildrenKeys(Set<String> output, ConfigurationSection section, boolean deep) {
         if (section instanceof MemorySection) {
             MemorySection sec = (MemorySection) section;
-
             for (Map.Entry<String, Object> entry : sec.map.entrySet()) {
                 output.add(createPath(section, entry.getKey(), this));
-
                 if ((deep) && (entry.getValue() instanceof ConfigurationSection)) {
                     ConfigurationSection subsection = (ConfigurationSection) entry.getValue();
                     mapChildrenKeys(output, subsection, deep);
@@ -615,7 +627,6 @@ public class MemorySection implements ConfigurationSection {
             }
         } else {
             Set<String> keys = section.getKeys(deep);
-
             for (String key : keys) {
                 output.add(createPath(section, key, this));
             }
@@ -625,10 +636,8 @@ public class MemorySection implements ConfigurationSection {
     protected void mapChildrenValues(Map<String, Object> output, ConfigurationSection section, boolean deep) {
         if (section instanceof MemorySection) {
             MemorySection sec = (MemorySection) section;
-
             for (Map.Entry<String, Object> entry : sec.map.entrySet()) {
                 output.put(createPath(section, entry.getKey(), this), entry.getValue());
-
                 if (entry.getValue() instanceof ConfigurationSection) {
                     if (deep) {
                         mapChildrenValues(output, (ConfigurationSection) entry.getValue(), deep);
@@ -637,7 +646,6 @@ public class MemorySection implements ConfigurationSection {
             }
         } else {
             Map<String, Object> values = section.getValues(deep);
-
             for (Map.Entry<String, Object> entry : values.entrySet()) {
                 output.put(createPath(section, entry.getKey(), this), entry.getValue());
             }

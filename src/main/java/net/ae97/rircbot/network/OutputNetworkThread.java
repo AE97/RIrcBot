@@ -35,6 +35,8 @@ public class OutputNetworkThread extends Thread {
     private volatile Socket socket;
 
     public OutputNetworkThread() {
+        super();
+        setDaemon(false);
     }
 
     public void start(Socket s) {

@@ -31,7 +31,9 @@ public class InputNetworkThread extends Thread {
     private volatile Socket socket;
 
     public InputNetworkThread() {
+        super();
         processor = new NetworkProcessor(20);
+        setDaemon(false);
     }
 
     public void start(Socket s) {
@@ -52,7 +54,7 @@ public class InputNetworkThread extends Thread {
         try (InputStream in = socket.getInputStream()) {
             while (!interrupted()) {
                 in.read(bytes);
-                processor.submit(new String(bytes), System.currentTimeMillis());
+                processor.submit(bytes, System.currentTimeMillis());
             }
         } catch (IOException ex) {
             RIrcBot.getLogger().log(Level.SEVERE, "Input has encountered an error", ex);

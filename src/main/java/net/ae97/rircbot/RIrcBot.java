@@ -102,19 +102,19 @@ public final class RIrcBot {
         processor.shutdown();
         try {
             inputNetworkThread.join();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ex) {
         }
         try {
             outputNetworkThread.join();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ex) {
         }
         try {
             processor.join();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ex) {
         }
         try {
             pluginManager.join();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ex) {
         }
     }
 }
