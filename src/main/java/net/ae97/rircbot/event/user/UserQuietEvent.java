@@ -40,5 +40,4 @@ public class UserQuietEvent extends UserEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

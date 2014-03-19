@@ -40,5 +40,4 @@ public class UserMessageEvent extends UserEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

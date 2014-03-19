@@ -31,5 +31,4 @@ public interface FlagRecipient {
     public void setFlag(String flag, boolean setting);
 
     public void setFlags(Map<String, Boolean> flags);
-
 }

@@ -40,5 +40,4 @@ public class ChannelNoticeEvent extends ChannelEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

@@ -31,7 +31,7 @@ import net.ae97.rircbot.listener.Listener;
 /**
  * @author Lord_Ralex
  */
-public class PluginManager {
+public final class PluginManager {
 
     private final List<PluginHolder> pluginList = new LinkedList<>();
     private final EventProcessor eventProcessor;

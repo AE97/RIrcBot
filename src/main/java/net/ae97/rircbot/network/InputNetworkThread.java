@@ -26,7 +26,7 @@ import net.ae97.rircbot.server.Server;
 /**
  * @author Lord_Ralex
  */
-public class InputNetworkThread extends Thread {
+public final class InputNetworkThread extends Thread {
 
     private final NetworkProcessor processor;
     private volatile Socket socket;

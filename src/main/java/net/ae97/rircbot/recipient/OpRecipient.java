@@ -26,5 +26,4 @@ public interface OpRecipient {
     public void deop(Channel chan);
 
     public void isOp(Channel chan);
-
 }

@@ -33,19 +33,15 @@ public abstract class Plugin {
     private YamlConfiguration config;
 
     public void onLoad() {
-
     }
 
     public void onEnable() {
-
     }
 
     public void onDisable() {
-
     }
 
     public void getDataFolder() {
-
     }
 
     public abstract String getName();
@@ -61,5 +57,4 @@ public abstract class Plugin {
         }
         return config;
     }
-
 }

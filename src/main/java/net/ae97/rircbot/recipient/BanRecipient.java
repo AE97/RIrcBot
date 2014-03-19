@@ -26,5 +26,4 @@ public interface BanRecipient {
     public void unban(Channel chan);
 
     public boolean isBanned(Channel chan);
-
 }

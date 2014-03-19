@@ -22,5 +22,4 @@ package net.ae97.rircbot.snapshot;
 public interface Snapshotable<T> {
 
     public T generateSnapshot();
-
 }

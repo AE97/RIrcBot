@@ -40,5 +40,4 @@ public abstract class UserEvent implements Event {
     public UserSnapshot getUserSnapshot() {
         return userSnapshot;
     }
-
 }

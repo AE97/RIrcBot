@@ -16,13 +16,8 @@
  */
 package net.ae97.rircbot.event;
 
-import java.util.List;
-import net.ae97.rircbot.listener.Listener;
-
 /**
  * @author Lord_Ralex
  */
-public interface Event {
-
-    public List<Listener> getHandlerList();
+public interface PriorityEvent {
 }

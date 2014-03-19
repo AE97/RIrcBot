@@ -40,5 +40,4 @@ public abstract class ChannelEvent implements Event {
     public ChannelSnapshot getChannelSnapshot() {
         return channelSnapshot;
     }
-
 }

@@ -20,5 +20,4 @@ package net.ae97.rircbot.snapshot;
  * @author Lord_Ralex
  */
 public class UserSnapshot {
-
 }

@@ -24,5 +24,4 @@ public interface CancellableEvent extends Event {
     public void setCancelled(boolean cancelled);
 
     public boolean isCancelled();
-
 }

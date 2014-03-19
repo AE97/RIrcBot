@@ -40,5 +40,4 @@ public class UserOpEvent extends UserEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

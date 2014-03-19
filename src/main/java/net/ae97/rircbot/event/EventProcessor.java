@@ -20,7 +20,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.logging.Level;
 import net.ae97.rircbot.RIrcBot;
 import net.ae97.rircbot.listener.Listener;
@@ -30,7 +29,7 @@ import net.ae97.rircbot.listener.Listener;
  */
 public class EventProcessor extends Thread {
 
-    private final Queue<Event> eventQueue = new LinkedList<>();
+    private final LinkedList<Event> eventQueue = new LinkedList<>();
 
     public EventProcessor() {
     }
@@ -72,8 +71,13 @@ public class EventProcessor extends Thread {
     public void fireEvent(Event event) {
         boolean notify;
         synchronized (eventQueue) {
-            eventQueue.add(event);
-            notify = eventQueue.peek() == event;
+            if (PriorityEvent.class.isAssignableFrom(event.getClass())) {
+                eventQueue.add(0, event);
+                notify = true;
+            } else {
+                eventQueue.add(event);
+                notify = eventQueue.peek() == event;
+            }
         }
         if (notify) {
             synchronized (this) {

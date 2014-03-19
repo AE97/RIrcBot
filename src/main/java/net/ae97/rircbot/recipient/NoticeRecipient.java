@@ -22,5 +22,4 @@ package net.ae97.rircbot.recipient;
 public interface NoticeRecipient {
 
     public void sendNotice(String... message);
-
 }

@@ -29,7 +29,7 @@ import net.ae97.rircbot.server.Server;
 /**
  * @author Lord_Ralex
  */
-public class OutputNetworkThread extends Thread {
+public final class OutputNetworkThread extends Thread {
 
     private final LinkedList<byte[]> queue = new LinkedList<>();
     private final ByteBuffer buffer = ByteBuffer.allocate(4);

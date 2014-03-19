@@ -25,17 +25,23 @@ import java.util.Queue;
 /**
  * @author Lord_Ralex
  */
-public class NetworkProcessor extends Thread {
+public final class NetworkProcessor extends Thread {
 
+    private final int cacheSize;
     private final Queue<Node> queue = new ArrayDeque<>();
     private final Deque<Node> freeNodes = new LinkedList<>();
     private final Deque<byte[]> freeBytes = new LinkedList<>();
+    private final Character[][] memoryCache = new Character[512][];
 
     public NetworkProcessor(int initial) {
         super();
-        for (int i = 0; i < initial; i++) {
+        cacheSize = initial;
+        for (int i = 0; i < cacheSize; i++) {
             freeNodes.add(new Node());
             freeBytes.add(new byte[512]);
+        }
+        for (int i = 0; i < memoryCache.length; i++) {
+            memoryCache[i] = new Character[i + 1];
         }
         setDaemon(false);
     }
@@ -70,7 +76,7 @@ public class NetworkProcessor extends Thread {
                     break;
                 }
             }
-            chars = (Character[]) characters.toArray(new Character[characters.size()]);
+            chars = (Character[]) characters.toArray(memoryCache[characters.size() - 1]);
             charArray = new char[chars.length];
             for (counter = 0; counter < chars.length; counter++) {
                 charArray[counter] = chars[counter].charValue();
@@ -81,7 +87,9 @@ public class NetworkProcessor extends Thread {
                 freeNodes.add(next);
             }
             synchronized (freeBytes) {
-                freeBytes.add(next.message);
+                if (freeBytes.size() < cacheSize) {
+                    freeBytes.add(next.message);
+                }
             }
             counter = 0;
             message = null;
@@ -95,7 +103,6 @@ public class NetworkProcessor extends Thread {
         synchronized (freeBytes) {
             messageCopy = freeBytes.poll();
         }
-
         if (messageCopy == null) {
             messageCopy = new byte[512];
         }

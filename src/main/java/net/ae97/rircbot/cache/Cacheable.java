@@ -20,5 +20,4 @@ package net.ae97.rircbot.cache;
  * @author Lord_Ralex
  */
 public interface Cacheable {
-
 }

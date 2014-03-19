@@ -40,5 +40,4 @@ public class UserVoiceEvent extends UserEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

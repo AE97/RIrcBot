@@ -23,7 +23,7 @@ import net.ae97.rircbot.configuration.InvalidConfigurationException;
 /**
  * @author Lord_Ralex
  */
-public class Main {
+public final class Main {
 
     private static final RIrcBot rircbot = new RIrcBot();
 

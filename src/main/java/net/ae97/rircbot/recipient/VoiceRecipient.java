@@ -26,5 +26,4 @@ public interface VoiceRecipient {
     public void devoice(Channel chan);
 
     public boolean isVoiced(Channel chan);
-
 }

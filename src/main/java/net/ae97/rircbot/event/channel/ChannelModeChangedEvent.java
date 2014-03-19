@@ -40,5 +40,4 @@ public class ChannelModeChangedEvent extends ChannelEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

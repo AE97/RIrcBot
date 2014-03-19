@@ -40,5 +40,4 @@ public class UserQuitEvent extends UserEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

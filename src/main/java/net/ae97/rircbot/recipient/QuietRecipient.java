@@ -26,5 +26,4 @@ public interface QuietRecipient {
     public void unquiet(Channel chan);
 
     public boolean isQuiet(Channel chan);
-
 }

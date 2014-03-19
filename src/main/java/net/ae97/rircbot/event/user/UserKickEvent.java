@@ -40,5 +40,4 @@ public class UserKickEvent extends UserEvent {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }

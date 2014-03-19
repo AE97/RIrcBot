@@ -14,15 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.ae97.rircbot.event;
+package net.ae97.rircbot.event.user;
 
+import java.util.LinkedList;
 import java.util.List;
+import net.ae97.rircbot.event.PriorityEvent;
 import net.ae97.rircbot.listener.Listener;
+import net.ae97.rircbot.recipient.User;
 
 /**
  * @author Lord_Ralex
  */
-public interface Event {
+public class UserWhoisEvent extends UserEvent implements PriorityEvent {
 
-    public List<Listener> getHandlerList();
+    private static final List<Listener> handlers = new LinkedList<>();
+
+    public UserWhoisEvent(User u) {
+        super(u);
+    }
+
+    @Override
+    public List<Listener> getHandlerList() {
+        return handlers;
+    }
+
+    public static List<Listener> getHandlers() {
+        return handlers;
+    }
 }

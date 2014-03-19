@@ -20,5 +20,4 @@ package net.ae97.rircbot.listener;
  * @author Lord_Ralex
  */
 public interface Listener {
-
 }

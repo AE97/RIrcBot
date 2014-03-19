@@ -16,14 +16,16 @@
  */
 package net.ae97.rircbot.processor;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lord_Ralex
  */
-public class Processor {
+public final class Processor {
 
     private final ExecutorService executor;
 
@@ -32,7 +34,15 @@ public class Processor {
     }
 
     public void submit(Runnable task) {
-        executor.execute(task);
+        executor.submit(task);
+    }
+
+    public <T> Future<T> submit(Runnable task, T result) {
+        return executor.submit(task, result);
+    }
+
+    public <T> Future<T> submit(Callable<T> task) {
+        return executor.submit(task);
     }
 
     public void shutdown() {
@@ -41,7 +51,7 @@ public class Processor {
 
     public void join() throws InterruptedException {
         shutdown();
-        while (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
-        }
+        do {
+        } while (!executor.awaitTermination(30, TimeUnit.SECONDS));
     }
 }

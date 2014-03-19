@@ -23,7 +23,7 @@ import net.ae97.rircbot.listener.Listener;
 /**
  * @author Lord_Ralex
  */
-public class PluginHolder {
+public final class PluginHolder {
 
     private final Plugin plugin;
     private final List<Listener> listeners = new LinkedList<>();
@@ -39,5 +39,4 @@ public class PluginHolder {
     public Plugin getPlugin() {
         return plugin;
     }
-
 }

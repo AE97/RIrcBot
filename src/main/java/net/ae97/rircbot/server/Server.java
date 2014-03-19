@@ -23,7 +23,6 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import javax.net.SocketFactory;
 import net.ae97.rircbot.RIrcBot;
 import net.ae97.rircbot.event.connection.ConnectionClosedEvent;
 import net.ae97.rircbot.event.connection.ConnectionOpenEvent;
@@ -35,7 +34,7 @@ import net.ae97.rircbot.recipient.User;
 /**
  * @author Lord_Ralex
  */
-public class Server {
+public final class Server {
 
     private InetSocketAddress destination;
     private InetSocketAddress source;
@@ -60,7 +59,6 @@ public class Server {
             source = new InetSocketAddress(InetAddress.getLocalHost(), 0);
         }
         socket.bind(source);
-        SocketFactory factory = SocketFactory.getDefault();
         for (InetAddress address : InetAddress.getAllByName(destinationIp)) {
             try {
                 destination = new InetSocketAddress(address, destinationPort);
@@ -93,7 +91,9 @@ public class Server {
     public User getUser(String nick) {
         User user = null;
         for (User u : users) {
-
+            if (u.getNick().equalsIgnoreCase(nick)) {
+                return u;
+            }
         }
         if (user == null) {
             user = User.getUser(this, nick);
@@ -104,8 +104,10 @@ public class Server {
 
     public Channel getChannel(String name) {
         Channel channel = null;
-        for (Channel u : channels) {
-
+        for (Channel c : channels) {
+            if (c.getName().equalsIgnoreCase(name)) {
+                return c;
+            }
         }
         if (channel == null) {
             channel = Channel.getChannel(this, name);
@@ -113,5 +115,4 @@ public class Server {
         }
         return channel;
     }
-
 }

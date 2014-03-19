@@ -51,5 +51,4 @@ public class ConnectionClosedEvent implements Event {
     public static List<Listener> getHandlers() {
         return handlers;
     }
-
 }
