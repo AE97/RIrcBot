@@ -21,4 +21,10 @@ package net.ae97.rircbot.recipient;
  */
 public interface VoiceRecipient {
 
+    public void voice(Channel chan);
+
+    public void devoice(Channel chan);
+
+    public boolean isVoiced(Channel chan);
+
 }

@@ -79,7 +79,7 @@ public class PluginManager {
                             listenerList.add(listener);
                         }
                     } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        Logger.getLogger(EventProcessor.class.getName()).log(Level.SEVERE, null, ex);
+                        RIrcBot.getLogger().log(Level.SEVERE, "Error on adding listener " + listener.getClass().getSimpleName() + " to event " + event.getSimpleName(), ex);
                     }
                 } else {
                     RIrcBot.getLogger().log(Level.SEVERE, "{0} tried to register non-event class {1}", new Object[]{listener.getClass().getName(), cl.getName()});

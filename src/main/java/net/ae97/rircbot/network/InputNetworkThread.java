@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import net.ae97.rircbot.RIrcBot;
+import net.ae97.rircbot.server.Server;
 
 /**
  * @author Lord_Ralex
@@ -29,9 +30,11 @@ public class InputNetworkThread extends Thread {
 
     private final NetworkProcessor processor;
     private volatile Socket socket;
+    private final Server server;
 
-    public InputNetworkThread() {
+    public InputNetworkThread(Server ircServer) {
         super();
+        server = ircServer;
         processor = new NetworkProcessor(20);
         setDaemon(false);
     }
@@ -58,7 +61,7 @@ public class InputNetworkThread extends Thread {
             }
         } catch (IOException ex) {
             RIrcBot.getLogger().log(Level.SEVERE, "Input has encountered an error", ex);
-            RIrcBot.getInstance().disconnect();
+            server.disconnect();
         }
     }
 

@@ -17,29 +17,28 @@
 package net.ae97.rircbot;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import net.ae97.rircbot.configuration.InvalidConfigurationException;
 
 /**
  * @author Lord_Ralex
  */
 public class Main {
 
-    private static volatile Main instance;
+    private static final RIrcBot rircbot = new RIrcBot();
 
     public static void main(String[] args) {
-        instance = new Main();
         try {
-            instance.rircbot.connect();
-        } catch (IOException ex) {
+            getBot().start();
+        } catch (IOException | InvalidConfigurationException ex) {
+            RIrcBot.getLogger().log(Level.SEVERE, "Error on starting RIrcBot", ex);
         }
     }
 
     protected static RIrcBot getBot() {
-        return instance.rircbot;
+        return rircbot;
     }
 
-    private final RIrcBot rircbot;
-
     private Main() {
-        rircbot = new RIrcBot();
     }
 }

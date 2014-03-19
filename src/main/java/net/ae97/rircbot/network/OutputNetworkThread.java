@@ -24,6 +24,7 @@ import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import net.ae97.rircbot.RIrcBot;
+import net.ae97.rircbot.server.Server;
 
 /**
  * @author Lord_Ralex
@@ -33,9 +34,11 @@ public class OutputNetworkThread extends Thread {
     private final LinkedList<byte[]> queue = new LinkedList<>();
     private final ByteBuffer buffer = ByteBuffer.allocate(4);
     private volatile Socket socket;
+    private final Server server;
 
-    public OutputNetworkThread() {
+    public OutputNetworkThread(Server ircServer) {
         super();
+        server = ircServer;
         setDaemon(false);
     }
 
@@ -72,7 +75,7 @@ public class OutputNetworkThread extends Thread {
             }
         } catch (IOException ex) {
             RIrcBot.getLogger().log(Level.SEVERE, "Output has encountered an error", ex);
-            RIrcBot.getInstance().disconnect();
+            server.disconnect();
         }
     }
 

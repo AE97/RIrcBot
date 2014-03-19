@@ -19,6 +19,8 @@ package net.ae97.rircbot.recipient;
 import java.util.List;
 import java.util.Map;
 import net.ae97.rircbot.cache.Cacheable;
+import net.ae97.rircbot.server.Server;
+import net.ae97.rircbot.services.NickServ;
 import net.ae97.rircbot.snapshot.Snapshotable;
 import net.ae97.rircbot.snapshot.UserSnapshot;
 
@@ -92,6 +94,21 @@ public class User implements BanRecipient, FlagRecipient, MessageRecipient, Noti
     }
 
     @Override
+    public void voice(Channel chan) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void devoice(Channel chan) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isVoiced(Channel chan) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
     public void quiet(Channel chan) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -111,7 +128,27 @@ public class User implements BanRecipient, FlagRecipient, MessageRecipient, Noti
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public static User getUser(String name) {
+    public String getLoginName() {
+        return null;
+    }
+
+    public String getIP() {
+        return null;
+    }
+
+    public String getNick() {
+        return null;
+    }
+
+    public List<Channel> getChannels() {
+        return null;
+    }
+
+    public NickServ getNickServ() {
+        return null;
+    }
+
+    public static User getUser(Server server, String name) {
         return new User();
     }
 }

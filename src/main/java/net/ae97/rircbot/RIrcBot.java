@@ -16,20 +16,17 @@
  */
 package net.ae97.rircbot;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.net.SocketFactory;
+import net.ae97.rircbot.configuration.ConfigurationSection;
+import net.ae97.rircbot.configuration.InvalidConfigurationException;
 import net.ae97.rircbot.configuration.file.YamlConfiguration;
-import net.ae97.rircbot.event.connection.ConnectionClosedEvent;
-import net.ae97.rircbot.event.connection.ConnectionOpenEvent;
-import net.ae97.rircbot.network.InputNetworkThread;
-import net.ae97.rircbot.network.OutputNetworkThread;
 import net.ae97.rircbot.plugin.PluginManager;
-import net.ae97.rircbot.processor.Processor;
+import net.ae97.rircbot.server.Server;
 
 /**
  * @author Lord_Ralex
@@ -46,75 +43,49 @@ public final class RIrcBot {
         return logger;
     }
 
-    public static PluginManager getPluginManager() {
-        return getInstance().pluginManager;
-    }
-
-    private final InputNetworkThread inputNetworkThread;
-    private final OutputNetworkThread outputNetworkThread;
-    private final Processor processor;
     private final YamlConfiguration configuration;
     private final PluginManager pluginManager;
+    private final List<Server> servers = new LinkedList<>();
 
     protected RIrcBot() {
         configuration = new YamlConfiguration();
-        processor = new Processor(configuration.getInt("core.processors", 2));
-        inputNetworkThread = new InputNetworkThread();
-        outputNetworkThread = new OutputNetworkThread();
         pluginManager = new PluginManager();
     }
 
-    public void connect() throws IOException {
-        Socket socket = null;
-        InetAddress bindAddress = null;
-        if (configuration.contains("server.bind")) {
-            bindAddress = InetAddress.getByName(configuration.getString("server.bind", null));
-        }
-        SocketFactory factory = SocketFactory.getDefault();
-        String dest = configuration.getString("server.ip");
-        int port = configuration.getInt("server.port", 6667);
-        for (InetAddress address : InetAddress.getAllByName(dest)) {
+    protected void start() throws IOException, InvalidConfigurationException {
+        configuration.load(new File("config.yml"));
+        ConfigurationSection serverConfig = configuration.getConfigurationSection("servers");
+        for (String server : serverConfig.getKeys(false)) {
+            Server newServer = new Server(this);
             try {
-                if (bindAddress != null) {
-                    socket = factory.createSocket(address, port, bindAddress, 0);
-                } else {
-                    socket = factory.createSocket(address, port);
-                }
-            } catch (IOException e) {
-                logger.log(Level.WARNING, "Could not connect to " + address.getHostAddress() + ":" + port, e);
+                newServer.connect(serverConfig.getString("ip"), serverConfig.getInt("port", 6667), serverConfig.getString("bind", null));
+            } catch (IOException ex) {
+                getLogger().log(Level.SEVERE, "Error on connecting to " + server, ex);
             }
+            servers.add(newServer);
         }
-        if (socket == null) {
-            throw new IOException("Failed to connect to server: " + dest + ":" + port);
-        }
-        ConnectionOpenEvent event = new ConnectionOpenEvent(new InetSocketAddress(socket.getInetAddress(), socket.getPort()), new InetSocketAddress(socket.getLocalAddress(), socket.getLocalPort()));
-        pluginManager.callEvent(event);
-        inputNetworkThread.start(socket);
-        outputNetworkThread.start(socket);
     }
 
-    public void disconnect() {
-        inputNetworkThread.shutdown();
-        outputNetworkThread.shutdown();
-        Socket socket = inputNetworkThread.getSocket();
-        ConnectionClosedEvent event = new ConnectionClosedEvent(new InetSocketAddress(socket.getInetAddress(), socket.getPort()), new InetSocketAddress(socket.getLocalAddress(), socket.getLocalPort()));
-        pluginManager.callEvent(event);
-        processor.shutdown();
-        try {
-            inputNetworkThread.join();
-        } catch (InterruptedException ex) {
+    public void shutdown() {
+        for (Server server : servers) {
+            server.disconnect();
         }
-        try {
-            outputNetworkThread.join();
-        } catch (InterruptedException ex) {
-        }
-        try {
-            processor.join();
-        } catch (InterruptedException ex) {
-        }
+        servers.clear();
         try {
             pluginManager.join();
         } catch (InterruptedException ex) {
         }
+    }
+
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public YamlConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    public List<Server> getServers() {
+        return servers;
     }
 }

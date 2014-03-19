@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.ae97.rircbot.cache.Cacheable;
+import net.ae97.rircbot.server.Server;
 import net.ae97.rircbot.snapshot.ChannelSnapshot;
 import net.ae97.rircbot.snapshot.Snapshotable;
 
@@ -68,7 +69,11 @@ public class Channel implements MessageRecipient, NoticeRecipient, FlagRecipient
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public static Channel getChannel(String name) {
+    public String getName() {
+        return null;
+    }
+
+    public static Channel getChannel(Server server, String name) {
         Channel chan = channelCache.get(name.toLowerCase());
         if (chan == null) {
             chan = new Channel();
